@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJ Property Status Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1>AJ Property Status Dashboard</h1>
+            <div class="header-controls">
+                <span class="last-updated" id="lastUpdated">Last Updated: --</span>
+                <button class="refresh-btn" id="refreshBtn" onclick="refreshDashboard()">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <div class="loading-indicator" id="loadingIndicator">
+            Loading properties...
+        </div>
+
+        <!-- Status Cards Grid -->
+        <div class="status-grid" id="statusGrid">
+            <!-- Cards will be dynamically generated here -->
+        </div>
+    </main>
+
+    <!-- Update Status Modal -->
+    <div class="modal" id="updateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Property Status</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="updateForm" onsubmit="handleStatusUpdate(event)">
+                <div class="form-group">
+                    <label>Property:</label>
+                    <input type="text" id="modalPropertyName" readonly class="form-control readonly">
+                    <input type="hidden" id="modalPropertyId">
+                </div>
+
+                <div class="form-group">
+                    <label>Current Status:</label>
+                    <input type="text" id="modalCurrentStatus" readonly class="form-control readonly">
+                </div>
+
+                <div class="form-group">
+                    <label for="modalNewStatus">New Status: <span class="required">*</span></label>
+                    <select id="modalNewStatus" class="form-control" required onchange="handleStatusChange()">
+                        <option value="">-- Select Status --</option>
+                        <option value="RENTED">Rented (Default)</option>
+                        <option value="WIP">Work in Progress</option>
+                        <option value="LISTED">Listed for Sale</option>
+                        <option value="VACANT">Vacant</option>
+                        <option value="COMING_SOON">Coming Soon</option>
+                        <option value="MOVE_OUT">Move Outs</option>
+                        <option value="IN_LINE_WIP">In Line for WIP</option>
+                        <option value="EVICTION">Under Eviction</option>
+                        <option value="LATE_RENT">Late Rent</option>
+                        <option value="MOVE_IN">Move Ins Scheduled</option>
+                        <option value="EXPIRING">Expiring Leases (60 days)</option>
+                    </select>
+                </div>
+
+                <!-- Optional Fields (shown/hidden based on status) -->
+                <div class="form-group optional-field" id="amountGroup" style="display: none;">
+                    <label for="modalAmount">Amount:</label>
+                    <input type="number" id="modalAmount" class="form-control" step="0.01" min="0" placeholder="0.00">
+                </div>
+
+                <div class="form-group optional-field" id="targetDateGroup" style="display: none;">
+                    <label for="modalTargetDate">Target Date:</label>
+                    <input type="date" id="modalTargetDate" class="form-control">
+                </div>
+
+                <div class="form-group optional-field" id="priorityGroup" style="display: none;">
+                    <label for="modalPriority">Priority:</label>
+                    <input type="number" id="modalPriority" class="form-control" min="1" placeholder="1">
+                </div>
+
+                <div class="form-group optional-field" id="assignedToGroup" style="display: none;">
+                    <label for="modalAssignedTo">Assigned To:</label>
+                    <input type="text" id="modalAssignedTo" class="form-control" placeholder="Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="modalNotes">Notes:</label>
+                    <textarea id="modalNotes" class="form-control" rows="3" placeholder="Optional notes..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalUpdatedBy">Updated By: <span class="required">*</span></label>
+                    <input type="text" id="modalUpdatedBy" class="form-control" required placeholder="Your name">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- App Configuration and Logic -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
