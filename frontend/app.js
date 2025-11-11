@@ -111,15 +111,31 @@ function renderDashboard() {
     // Group properties by status
     const statusGroups = groupPropertiesByStatus();
 
-    // Render each status card (except RENTED which is hidden)
+    // Separate regular statuses from bottom statuses
+    const regularStatuses = [];
+    const bottomStatuses = [];
+
     Object.keys(STATUS_CONFIG).forEach(statusKey => {
         const statusConfig = STATUS_CONFIG[statusKey];
 
-        // Skip if this status should be hidden from dashboard
-        if (statusConfig.hideFromDashboard) {
-            return;
+        if (statusConfig.showAtBottom) {
+            bottomStatuses.push(statusKey);
+        } else {
+            regularStatuses.push(statusKey);
         }
+    });
 
+    // Render regular status cards first
+    regularStatuses.forEach(statusKey => {
+        const statusConfig = STATUS_CONFIG[statusKey];
+        const properties = statusGroups[statusKey] || [];
+        const card = createStatusCard(statusKey, statusConfig, properties);
+        statusGrid.appendChild(card);
+    });
+
+    // Render bottom status cards last (like RENTED)
+    bottomStatuses.forEach(statusKey => {
+        const statusConfig = STATUS_CONFIG[statusKey];
         const properties = statusGroups[statusKey] || [];
         const card = createStatusCard(statusKey, statusConfig, properties);
         statusGrid.appendChild(card);
@@ -193,14 +209,30 @@ function sortPropertiesByStatus(properties, statusKey) {
 function createStatusCard(statusKey, statusConfig, properties) {
     const card = document.createElement('div');
     card.className = 'status-card';
+    card.setAttribute('data-status', statusKey);
+
+    // Add collapsed class if configured
+    if (statusConfig.collapsed) {
+        card.classList.add('collapsed');
+    }
 
     // Header
     const header = document.createElement('div');
     header.className = `status-card-header status-${statusKey}`;
+
+    // Add collapse arrow for collapsible cards
+    const arrowIcon = statusConfig.collapsed ? '<span class="collapse-arrow">▼</span>' : '';
+
     header.innerHTML = `
-        <span class="status-card-title">${statusConfig.name}</span>
+        <span class="status-card-title">${arrowIcon}${statusConfig.name}</span>
         <span class="status-count">${properties.length}</span>
     `;
+
+    // Add click handler for collapsible cards
+    if (statusConfig.collapsed) {
+        header.style.cursor = 'pointer';
+        header.onclick = () => toggleCardCollapse(card);
+    }
 
     // Body
     const body = document.createElement('div');
@@ -292,6 +324,24 @@ function getPropertyDetails(property, statusConfig) {
     }
 
     return parts.length > 0 ? parts.join(' • ') : '—';
+}
+
+// ============================================
+// Collapsible Card Functions
+// ============================================
+
+function toggleCardCollapse(card) {
+    card.classList.toggle('collapsed');
+
+    // Rotate arrow icon
+    const arrow = card.querySelector('.collapse-arrow');
+    if (arrow) {
+        if (card.classList.contains('collapsed')) {
+            arrow.textContent = '▼';
+        } else {
+            arrow.textContent = '▲';
+        }
+    }
 }
 
 // ============================================

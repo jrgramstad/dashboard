@@ -205,6 +205,34 @@ body {
 .status-LATE_RENT { background-color: #EF4444; }
 .status-MOVE_IN { background-color: #10B981; }
 .status-EXPIRING { background-color: #EAB308; }
+.status-RENTED { background-color: #6B7280; }
+
+/* ============================================
+   Collapsible Card Styles
+   ============================================ */
+
+.collapse-arrow {
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.875rem;
+    transition: transform 0.3s ease;
+}
+
+.status-card.collapsed .collapse-arrow {
+    transform: rotate(0deg);
+}
+
+.status-card:not(.collapsed) .collapse-arrow {
+    transform: rotate(0deg);
+}
+
+.status-card.collapsed .status-card-body {
+    display: none;
+}
+
+.status-card.collapsed:hover {
+    transform: translateY(0);
+}
 
 /* ============================================
    Modal Styles

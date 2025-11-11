@@ -72,9 +72,10 @@ const STATUS_CONFIG = {
     fields: ['target_date', 'notes']
   },
   'RENTED': {
-    name: 'Rented',
+    name: 'Rented - No Issues',
     color: '#6B7280', // Gray
-    hideFromDashboard: true,
+    collapsed: true,
+    showAtBottom: true,
     fields: ['notes']
   }
 };
