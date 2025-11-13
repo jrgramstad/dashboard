@@ -79,7 +79,7 @@ async function fetchProperties() {
     }
 
     allProperties = data || [];
-    console.log(`Loaded ${allProperties.length} active properties`);
+    console.log(`✅ Loaded ${allProperties.length} active properties from database`);
 }
 
 async function fetchPropertyStatuses() {
@@ -97,7 +97,7 @@ async function fetchPropertyStatuses() {
     }
 
     propertyStatuses = data || [];
-    console.log(`Loaded ${propertyStatuses.length} property statuses`);
+    console.log(`✅ Loaded ${propertyStatuses.length} property status records from database`);
 }
 
 // ============================================
@@ -110,6 +110,16 @@ function renderDashboard() {
 
     // Group properties by status
     const statusGroups = groupPropertiesByStatus();
+
+    // Log status breakdown
+    const totalProperties = Object.values(statusGroups).reduce((sum, props) => sum + props.length, 0);
+    console.log(`📊 Dashboard rendering ${totalProperties} total properties:`);
+    Object.keys(statusGroups).forEach(statusKey => {
+        const count = statusGroups[statusKey].length;
+        if (count > 0) {
+            console.log(`   - ${STATUS_CONFIG[statusKey]?.name || statusKey}: ${count}`);
+        }
+    });
 
     // Separate regular statuses from bottom statuses
     const regularStatuses = [];
